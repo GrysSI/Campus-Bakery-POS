@@ -22,15 +22,15 @@
           </p>
         </div>
         <div class="stage-badge" aria-label="Current implementation stage">
-          <span>Stage 1</span>
-          Setup &amp; Interface
+          <span>Stage 2</span>
+          Ordering &amp; Calculations
         </div>
       </div>
     </header>
 
     <main class="app-shell">
       <p id="app-status" class="status-message" role="status" aria-live="polite">
-        Product catalog loaded. Ordering controls will be enabled in Stage 2.
+        Select a bakery product to begin an order.
       </p>
 
       <div class="workspace-grid">
@@ -55,7 +55,7 @@
                 <p class="section-label">Current order</p>
                 <h2 id="order-heading">Order Summary</h2>
               </div>
-              <span class="count-badge">0 items</span>
+              <span id="cart-count" class="count-badge">0 items</span>
             </div>
 
             <div class="empty-state" id="empty-cart-message">
@@ -63,6 +63,8 @@
               <p>Your cart is empty.</p>
               <small>Add a bakery product to begin an order.</small>
             </div>
+
+            <div id="cart-list" class="cart-list" aria-live="polite" hidden></div>
 
             <div class="order-total" aria-label="Order total">
               <span>Total</span>
@@ -92,7 +94,7 @@
                 disabled
               />
             </div>
-            <p class="field-help">Payment entry will be enabled after cart ordering is implemented.</p>
+            <p class="field-help">Payment entry will be enabled in Stage 3.</p>
             <button class="primary-button" type="button" disabled>Confirm Cash Payment</button>
           </section>
 
