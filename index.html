@@ -22,8 +22,8 @@
           </p>
         </div>
         <div class="stage-badge" aria-label="Current implementation stage">
-          <span>Stage 2</span>
-          Ordering &amp; Calculations
+          <span>Stage 3</span>
+          Validation &amp; Completion
         </div>
       </div>
     </header>
@@ -80,35 +80,83 @@
               </div>
             </div>
 
-            <label for="cash-amount">Amount paid</label>
-            <div class="money-field">
-              <span aria-hidden="true">₱</span>
-              <input
-                id="cash-amount"
-                name="cashAmount"
-                type="number"
-                min="0"
-                step="0.01"
-                inputmode="decimal"
-                placeholder="0.00"
-                disabled
-              />
-            </div>
-            <p class="field-help">Payment entry will be enabled in Stage 3.</p>
-            <button class="primary-button" type="button" disabled>Confirm Cash Payment</button>
+            <form id="payment-form" novalidate>
+              <label for="cash-amount">Amount paid</label>
+              <div class="money-field">
+                <span aria-hidden="true">₱</span>
+                <input
+                  id="cash-amount"
+                  name="cashAmount"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputmode="decimal"
+                  placeholder="0.00"
+                  aria-describedby="payment-help payment-message"
+                  disabled
+                />
+              </div>
+              <p id="payment-help" class="field-help">
+                Add at least one product before entering a cash payment.
+              </p>
+              <p id="payment-message" class="payment-message" role="alert" hidden></p>
+              <button id="confirm-payment" class="primary-button" type="submit" disabled>
+                Confirm Cash Payment
+              </button>
+            </form>
           </section>
 
-          <section class="panel muted-panel" aria-labelledby="receipt-heading">
+          <section class="panel muted-panel receipt-panel" aria-labelledby="receipt-heading">
             <div class="section-heading compact-heading">
               <div>
                 <p class="section-label">After payment</p>
                 <h2 id="receipt-heading">Confirmation &amp; Receipt</h2>
               </div>
             </div>
-            <p class="section-copy">
+            <p id="receipt-placeholder" class="section-copy">
               Transaction details and the digital receipt will appear here after a successful payment.
             </p>
-            <button class="secondary-button" type="button" disabled>New Transaction</button>
+
+            <div id="payment-confirmation" class="confirmation-banner" tabindex="-1" hidden>
+              <strong>Payment successful</strong>
+              <span>Your cash transaction has been recorded.</span>
+            </div>
+
+            <div id="digital-receipt" class="digital-receipt" hidden>
+              <div class="receipt-title">
+                <div>
+                  <p class="section-label">Digital receipt</p>
+                  <h3>Campus Bakery</h3>
+                </div>
+                <span id="receipt-date"></span>
+              </div>
+
+              <table class="receipt-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Item</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody id="receipt-items"></tbody>
+              </table>
+
+              <dl class="receipt-totals">
+                <div><dt>Total</dt><dd id="receipt-total">₱0.00</dd></div>
+                <div><dt>Amount paid</dt><dd id="receipt-paid">₱0.00</dd></div>
+                <div><dt>Change</dt><dd id="receipt-change">₱0.00</dd></div>
+              </dl>
+
+              <p class="receipt-reference">
+                Transaction reference
+                <strong id="receipt-reference"></strong>
+              </p>
+            </div>
+
+            <button id="new-transaction" class="secondary-button" type="button" disabled>
+              New Transaction
+            </button>
           </section>
         </aside>
       </div>

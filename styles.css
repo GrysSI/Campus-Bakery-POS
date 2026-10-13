@@ -443,8 +443,144 @@ label {
   font-size: 0.78rem;
 }
 
+.payment-message {
+  margin: -4px 0 14px;
+  padding: 9px 10px;
+  border: 1px solid #e2aaa0;
+  border-radius: 8px;
+  color: #8f2f22;
+  background: #fff0ed;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.payment-message[hidden] {
+  display: none;
+}
+
 .primary-button {
   width: 100%;
+}
+
+.confirmation-banner {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 16px;
+  padding: 13px 14px;
+  border: 1px solid #b8d9c4;
+  border-radius: 10px;
+  color: var(--green-700);
+  background: var(--green-100);
+}
+
+.confirmation-banner[hidden],
+.digital-receipt[hidden] {
+  display: none;
+}
+
+.confirmation-banner span {
+  font-size: 0.82rem;
+}
+
+.digital-receipt {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.receipt-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--gray-300);
+}
+
+.receipt-title h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.receipt-title > span {
+  max-width: 130px;
+  color: var(--gray-500);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.receipt-table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.receipt-table th,
+.receipt-table td {
+  padding: 8px 4px;
+  border-bottom: 1px solid #ebe7e1;
+  text-align: right;
+  vertical-align: top;
+}
+
+.receipt-table th:first-child,
+.receipt-table td:first-child {
+  padding-left: 0;
+  text-align: left;
+}
+
+.receipt-table th:last-child,
+.receipt-table td:last-child {
+  padding-right: 0;
+}
+
+.receipt-table td strong,
+.receipt-table td small {
+  display: block;
+}
+
+.receipt-table td small {
+  color: var(--gray-500);
+}
+
+.receipt-totals {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 2px 0 12px;
+  border-bottom: 1px dashed var(--gray-300);
+}
+
+.receipt-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.receipt-totals dt,
+.receipt-totals dd {
+  margin: 0;
+}
+
+.receipt-totals dd {
+  font-weight: 800;
+}
+
+.receipt-reference {
+  margin: 12px 0 0;
+  color: var(--gray-500);
+  font-size: 0.72rem;
+}
+
+.receipt-reference strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--brown-950);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.04em;
 }
 
 .site-footer {

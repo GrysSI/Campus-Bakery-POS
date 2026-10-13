@@ -2,16 +2,20 @@
 
 A dependency-free desktop web application for the individual IT 415 practical examination, Scenario 2. It uses the six sample bakery products and prices from the examination brief.
 
-## Current implementation stage
+## Completed application
 
-Stage 2 - Ordering and calculations
+Stage 3 - Validation and final improvements
 
 - Project structure and responsive desktop layout
 - Six hard-coded bakery products with Philippine-peso prices
 - Add-to-cart buttons for every product
 - In-memory cart with quantity increase, decrease, and removal controls
 - Automatic item subtotals, item count, and order total
-- Payment, confirmation, receipt, and reset controls intentionally disabled until Stage 3
+- Cash payment with blank, non-numeric, negative, and insufficient-value validation
+- Correct change calculation for sufficient payments
+- Payment confirmation with a unique transaction reference
+- Digital receipt with items, quantities, subtotals, total, amount paid, and change
+- New Transaction reset for the cart, payment, confirmation, and receipt
 
 ## Run the application
 
@@ -25,23 +29,27 @@ No package installation or database is required.
 
 - `index.html` - semantic application layout
 - `styles.css` - desktop-first interface styling
-- `app.js` - hard-coded product data, currency formatting, and product rendering
+- `app.js` - product data, cart calculations, payment validation, receipt generation, and reset behavior
 
-## Stage 2 manual checks
+## Final manual checks
 
 1. Open `index.html` in a desktop browser.
 2. Confirm that all six products appear with the exact required prices.
 3. Add Pandesal twice and Brewed Coffee once. Confirm the cart shows three items and a total of `₱75.00`.
-4. Decrease Pandesal to one. Confirm its subtotal is `₱25.00`, the cart shows two items, and the total is `₱50.00`.
-5. Increase Brewed Coffee to two. Confirm its subtotal is `₱50.00`, the cart shows three items, and the total is `₱75.00`.
-6. Remove Brewed Coffee. Confirm only Pandesal remains and the total is `₱25.00`.
-7. Remove Pandesal. Confirm the empty-cart message, zero item count, and `₱0.00` total return.
-8. Use the Tab key to reach Add, quantity, and Remove controls and confirm a visible focus outline.
-9. Confirm cash payment, confirmation, receipt, and New Transaction controls remain disabled.
+4. Submit a blank payment. Confirm the valid-payment message appears.
+5. Try entering letters. Confirm the numeric field rejects them and submission shows the valid-payment message.
+6. Enter a negative amount. Confirm it is rejected as invalid.
+7. Enter `70`. Confirm the insufficient-payment message requests at least `₱75.00`.
+8. Enter `75`. Confirm payment succeeds with `₱0.00` change and a transaction reference.
+9. Start a new transaction and rebuild the same `₱75.00` order.
+10. Enter `100`. Confirm payment succeeds with `₱25.00` change.
+11. Confirm the receipt items, quantities, subtotals, total, amount paid, change, and reference match the completed order.
+12. Select New Transaction. Confirm the cart is empty, total is `₱0.00`, payment is blank and disabled, receipt is hidden, and product buttons work again.
+13. Use the Tab and Enter keys to confirm all active controls work with a keyboard and show a visible focus outline.
 
-## Planned implementation stages
+## Implementation stages
 
 1. Setup and interface - completed
-2. Ordering and calculations - current stage
-3. Validation and final improvements - cash validation, change, confirmation, receipt, reset, and final testing
+2. Ordering and calculations - completed
+3. Validation and final improvements - completed
 
