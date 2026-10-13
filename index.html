@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Campus Bakery point-of-sale application for the IT 415 practical examination."
+    />
+    <title>Campus Bakery POS</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <div>
+          <p class="eyebrow">IT 415 Practical Examination</p>
+          <h1>Campus Bakery POS</h1>
+          <p class="header-copy">
+            Fresh campus favorites, simple ordering, and cash payment.
+          </p>
+        </div>
+        <div class="stage-badge" aria-label="Current implementation stage">
+          <span>Stage 1</span>
+          Setup &amp; Interface
+        </div>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <p id="app-status" class="status-message" role="status" aria-live="polite">
+        Product catalog loaded. Ordering controls will be enabled in Stage 2.
+      </p>
+
+      <div class="workspace-grid">
+        <section class="panel catalog-panel" aria-labelledby="catalog-heading">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">Browse</p>
+              <h2 id="catalog-heading">Bakery Products</h2>
+            </div>
+            <span id="product-count" class="count-badge">0 products</span>
+          </div>
+          <p class="section-copy">
+            Choose from bread, pastries, baked goods, and a hot beverage.
+          </p>
+          <div id="product-grid" class="product-grid" aria-live="polite"></div>
+        </section>
+
+        <aside class="transaction-column" aria-label="Current transaction">
+          <section class="panel" aria-labelledby="order-heading">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="section-label">Current order</p>
+                <h2 id="order-heading">Order Summary</h2>
+              </div>
+              <span class="count-badge">0 items</span>
+            </div>
+
+            <div class="empty-state" id="empty-cart-message">
+              <span class="empty-state-icon" aria-hidden="true">0</span>
+              <p>Your cart is empty.</p>
+              <small>Add a bakery product to begin an order.</small>
+            </div>
+
+            <div class="order-total" aria-label="Order total">
+              <span>Total</span>
+              <strong id="order-total">₱0.00</strong>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="payment-heading">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="section-label">Cash only</p>
+                <h2 id="payment-heading">Payment</h2>
+              </div>
+            </div>
+
+            <label for="cash-amount">Amount paid</label>
+            <div class="money-field">
+              <span aria-hidden="true">₱</span>
+              <input
+                id="cash-amount"
+                name="cashAmount"
+                type="number"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                placeholder="0.00"
+                disabled
+              />
+            </div>
+            <p class="field-help">Payment entry will be enabled after cart ordering is implemented.</p>
+            <button class="primary-button" type="button" disabled>Confirm Cash Payment</button>
+          </section>
+
+          <section class="panel muted-panel" aria-labelledby="receipt-heading">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="section-label">After payment</p>
+                <h2 id="receipt-heading">Confirmation &amp; Receipt</h2>
+              </div>
+            </div>
+            <p class="section-copy">
+              Transaction details and the digital receipt will appear here after a successful payment.
+            </p>
+            <button class="secondary-button" type="button" disabled>New Transaction</button>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>Campus Bakery POS &middot; Individual IT 415 practical examination</p>
+    </footer>
+  </body>
+</html>
