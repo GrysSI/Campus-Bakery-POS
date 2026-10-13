@@ -30,6 +30,14 @@ No package installation or database is required.
 - `index.html` - semantic application layout
 - `styles.css` - desktop-first interface styling
 - `app.js` - product data, cart calculations, payment validation, receipt generation, and reset behavior
+- `AI_DEVELOPMENT_LOG.md` - actual prompts, response summaries, adaptations, verification, and student-evaluation fields
+- `FINAL_VERIFICATION.md` - observed acceptance results, Git evidence, and pending submission items
+
+## Evidence documents
+
+- Review `AI_DEVELOPMENT_LOG.md` and complete all three student-evaluation sections in your own words.
+- Review `FINAL_VERIFICATION.md` for the checks performed and the screenshots or Git evidence still pending.
+- Do not mark pending evidence complete until you have personally inspected it.
 
 ## Final manual checks
 
@@ -52,4 +60,5 @@ No package installation or database is required.
 1. Setup and interface - completed
 2. Ordering and calculations - completed
 3. Validation and final improvements - completed
+4. Verification and documentation - completed; student evidence items remain listed in `FINAL_VERIFICATION.md`
 

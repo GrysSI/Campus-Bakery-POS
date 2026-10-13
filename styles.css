@@ -273,6 +273,10 @@ button:disabled {
   text-align: center;
 }
 
+.empty-state[hidden] {
+  display: none;
+}
+
 .empty-state-icon {
   display: grid;
   width: 42px;
