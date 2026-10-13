@@ -11,6 +11,7 @@ const products = Object.freeze([
 // Cart quantities are stored in memory, keyed by product ID.
 const cart = new Map();
 let completedTransaction = null;
+let activeCategoryFilter = "all";
 
 const currencyFormatter = new Intl.NumberFormat("en-PH", {
   style: "currency",
@@ -75,24 +76,35 @@ function validatePayment(rawValue, total) {
 }
 
 function updateStatus(message) {
-  document.querySelector("#app-status").textContent = message;
+  const statusEl = document.querySelector("#app-status");
+  if (statusEl) {
+    statusEl.textContent = message;
+  }
 }
 
 function clearPaymentMessage() {
   const message = document.querySelector("#payment-message");
   const input = document.querySelector("#cash-amount");
-  message.hidden = true;
-  message.textContent = "";
-  input.removeAttribute("aria-invalid");
+  if (message) {
+    message.hidden = true;
+    message.textContent = "";
+  }
+  if (input) {
+    input.removeAttribute("aria-invalid");
+  }
 }
 
 function showPaymentError(messageText) {
   const message = document.querySelector("#payment-message");
   const input = document.querySelector("#cash-amount");
-  message.textContent = messageText;
-  message.hidden = false;
-  input.setAttribute("aria-invalid", "true");
-  input.focus();
+  if (message) {
+    message.textContent = messageText;
+    message.hidden = false;
+  }
+  if (input) {
+    input.setAttribute("aria-invalid", "true");
+    input.focus();
+  }
 }
 
 function syncTransactionControls() {
@@ -101,16 +113,29 @@ function syncTransactionControls() {
   const paymentInput = document.querySelector("#cash-amount");
   const confirmButton = document.querySelector("#confirm-payment");
   const paymentHelp = document.querySelector("#payment-help");
+  const openPaymentBtn = document.querySelector("#open-payment-btn");
+  const openReviewBtn = document.querySelector("#open-review-btn");
+  const paymentDueDisplay = document.querySelector("#payment-amount-due");
+  const subtotalDisplay = document.querySelector("#order-subtotal");
 
-  paymentInput.disabled = !hasItems || transactionComplete;
-  confirmButton.disabled = !hasItems || transactionComplete;
+  const total = getCartTotal();
 
-  if (transactionComplete) {
-    paymentHelp.textContent = "Payment completed. Start a new transaction to order again.";
-  } else if (hasItems) {
-    paymentHelp.textContent = `Amount due: ${formatCurrency(getCartTotal())}.`;
-  } else {
-    paymentHelp.textContent = "Add at least one product before entering a cash payment.";
+  if (paymentInput) paymentInput.disabled = !hasItems || transactionComplete;
+  if (confirmButton) confirmButton.disabled = !hasItems || transactionComplete;
+  if (openPaymentBtn) openPaymentBtn.disabled = !hasItems || transactionComplete;
+  if (openReviewBtn) openReviewBtn.disabled = !hasItems || transactionComplete;
+
+  if (subtotalDisplay) subtotalDisplay.textContent = formatCurrency(total);
+  if (paymentDueDisplay) paymentDueDisplay.textContent = formatCurrency(total);
+
+  if (paymentHelp) {
+    if (transactionComplete) {
+      paymentHelp.textContent = "Payment completed. Start a new transaction to order again.";
+    } else if (hasItems) {
+      paymentHelp.textContent = `Amount due: ${formatCurrency(total)}.`;
+    } else {
+      paymentHelp.textContent = "Add at least one product before entering a cash payment.";
+    }
   }
 
   document.querySelectorAll("#product-grid button, #cart-list button").forEach((button) => {
@@ -121,25 +146,39 @@ function syncTransactionControls() {
 function createProductCard(product) {
   const article = document.createElement("article");
   article.className = "product-card";
+  article.dataset.category = product.category;
 
-  const category = document.createElement("p");
+  const category = document.createElement("span");
   category.className = "product-category";
   category.textContent = product.category;
 
   const name = document.createElement("h3");
+  name.className = "product-name";
   name.textContent = product.name;
 
   const price = document.createElement("p");
   price.className = "product-price";
   price.textContent = formatCurrency(product.price);
 
+  const cardActions = document.createElement("div");
+  cardActions.className = "product-card-actions";
+
+  const detailsButton = document.createElement("button");
+  detailsButton.type = "button";
+  detailsButton.className = "secondary-button product-details-btn";
+  detailsButton.dataset.detailsId = product.id;
+  detailsButton.textContent = "Details";
+  detailsButton.setAttribute("aria-label", `View details for ${product.name}`);
+
   const addButton = document.createElement("button");
   addButton.type = "button";
+  addButton.className = "primary-button product-add-btn";
   addButton.dataset.productId = product.id;
   addButton.textContent = "Add to Cart";
   addButton.setAttribute("aria-label", `Add ${product.name} to cart`);
 
-  article.append(category, name, price, addButton);
+  cardActions.append(detailsButton, addButton);
+  article.append(category, name, price, cardActions);
   return article;
 }
 
@@ -147,9 +186,13 @@ function renderProducts() {
   const productGrid = document.querySelector("#product-grid");
   const productCount = document.querySelector("#product-count");
 
-  const cards = products.map(createProductCard);
+  const filteredProducts = activeCategoryFilter === "all"
+    ? products
+    : products.filter((p) => p.category === activeCategoryFilter);
+
+  const cards = filteredProducts.map(createProductCard);
   productGrid.replaceChildren(...cards);
-  productCount.textContent = `${products.length} products`;
+  productCount.textContent = `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"}`;
 }
 
 function createQuantityButton(label, action, item, disabled = false) {
@@ -292,15 +335,16 @@ function createReceiptRow(item) {
 }
 
 function renderReceipt(transaction) {
-  document.querySelector("#receipt-placeholder").hidden = true;
+  const placeholder = document.querySelector("#receipt-placeholder");
+  if (placeholder) placeholder.hidden = true;
 
   const confirmation = document.querySelector("#payment-confirmation");
   const receipt = document.querySelector("#digital-receipt");
   const receiptItems = document.querySelector("#receipt-items");
 
-  confirmation.hidden = false;
-  receipt.hidden = false;
-  receiptItems.replaceChildren(...transaction.items.map(createReceiptRow));
+  if (confirmation) confirmation.hidden = false;
+  if (receipt) receipt.hidden = false;
+  if (receiptItems) receiptItems.replaceChildren(...transaction.items.map(createReceiptRow));
 
   document.querySelector("#receipt-date").textContent = transaction.createdAt.toLocaleString(
     "en-PH",
@@ -312,8 +356,13 @@ function renderReceipt(transaction) {
   document.querySelector("#receipt-reference").textContent = transaction.reference;
 
   const newTransactionButton = document.querySelector("#new-transaction");
-  newTransactionButton.disabled = false;
-  confirmation.focus();
+  if (newTransactionButton) newTransactionButton.disabled = false;
+
+  // Open the receipt dialog
+  const receiptDialog = document.querySelector("#receipt-dialog");
+  if (receiptDialog && typeof receiptDialog.showModal === "function") {
+    receiptDialog.showModal();
+  }
 }
 
 function handlePaymentSubmit(event) {
@@ -347,6 +396,13 @@ function handlePaymentSubmit(event) {
   };
 
   clearPaymentMessage();
+
+  // Close payment dialog if open
+  const paymentDialog = document.querySelector("#payment-dialog");
+  if (paymentDialog && paymentDialog.open) {
+    paymentDialog.close();
+  }
+
   renderReceipt(completedTransaction);
   syncTransactionControls();
   updateStatus(
@@ -363,14 +419,23 @@ function startNewTransaction() {
   const confirmation = document.querySelector("#payment-confirmation");
   const receipt = document.querySelector("#digital-receipt");
   const receiptItems = document.querySelector("#receipt-items");
+  const receiptDialog = document.querySelector("#receipt-dialog");
 
-  paymentInput.value = "";
+  if (receiptDialog && receiptDialog.open) {
+    receiptDialog.close();
+  }
+
+  if (paymentInput) paymentInput.value = "";
   clearPaymentMessage();
-  confirmation.hidden = true;
-  receipt.hidden = true;
-  receiptItems.replaceChildren();
-  document.querySelector("#receipt-placeholder").hidden = false;
-  document.querySelector("#new-transaction").disabled = true;
+  if (confirmation) confirmation.hidden = true;
+  if (receipt) receipt.hidden = true;
+  if (receiptItems) receiptItems.replaceChildren();
+
+  const placeholder = document.querySelector("#receipt-placeholder");
+  if (placeholder) placeholder.hidden = false;
+
+  const newTransactionBtn = document.querySelector("#new-transaction");
+  if (newTransactionBtn) newTransactionBtn.disabled = true;
 
   renderProducts();
   renderCart();
@@ -380,8 +445,10 @@ function startNewTransaction() {
 
 function handleProductClick(event) {
   const addButton = event.target.closest("button[data-product-id]");
-  if (!addButton) return;
-  addToCart(addButton.dataset.productId);
+  if (addButton) {
+    addToCart(addButton.dataset.productId);
+    return;
+  }
 }
 
 function handleCartClick(event) {
@@ -394,10 +461,81 @@ function handleCartClick(event) {
   if (action === "remove") removeFromCart(productId);
 }
 
+// Category filter button handler
+function handleCategoryFilterClick(event) {
+  const chip = event.target.closest(".category-chip");
+  if (!chip) return;
+
+  document.querySelectorAll(".category-chip").forEach((btn) => btn.classList.remove("is-active"));
+  chip.classList.add("is-active");
+
+  activeCategoryFilter = chip.dataset.category;
+  renderProducts();
+}
+
+// Quick cash preset button handler
+function handleQuickCashClick(event) {
+  const btn = event.target.closest(".quick-cash-btn");
+  if (!btn) return;
+
+  const input = document.querySelector("#cash-amount");
+  if (!input) return;
+
+  const preset = btn.dataset.quickCash;
+  if (preset === "exact") {
+    input.value = getCartTotal().toFixed(2);
+  } else {
+    input.value = Number(preset).toFixed(2);
+  }
+  clearPaymentMessage();
+  input.focus();
+}
+
+// Dialog close buttons handler
+function handleDialogCloseClick(event) {
+  const closeBtn = event.target.closest("[data-dialog-close]");
+  if (!closeBtn) return;
+
+  const dialog = closeBtn.closest("dialog");
+  if (dialog && dialog.open) {
+    dialog.close();
+  }
+}
+
+// Setup Event Listeners
 document.querySelector("#product-grid").addEventListener("click", handleProductClick);
 document.querySelector("#cart-list").addEventListener("click", handleCartClick);
 document.querySelector("#payment-form").addEventListener("submit", handlePaymentSubmit);
 document.querySelector("#new-transaction").addEventListener("click", startNewTransaction);
 
+// Category navigation
+const categoryFilters = document.querySelector(".category-filters");
+if (categoryFilters) {
+  categoryFilters.addEventListener("click", handleCategoryFilterClick);
+}
+
+// Quick cash buttons
+const quickCashRow = document.querySelector(".quick-cash-row");
+if (quickCashRow) {
+  quickCashRow.addEventListener("click", handleQuickCashClick);
+}
+
+// Dialog openers and closers
+const openPaymentBtn = document.querySelector("#open-payment-btn");
+if (openPaymentBtn) {
+  openPaymentBtn.addEventListener("click", () => {
+    const paymentDialog = document.querySelector("#payment-dialog");
+    if (paymentDialog && typeof paymentDialog.showModal === "function") {
+      paymentDialog.showModal();
+      const input = document.querySelector("#cash-amount");
+      if (input && !input.disabled) input.focus();
+    }
+  });
+}
+
+// Global modal close handler for [data-dialog-close]
+document.addEventListener("click", handleDialogCloseClick);
+
+// Initial Render
 renderProducts();
 renderCart();
